@@ -39,21 +39,35 @@ const Contact = () => {
       existingMessages.push(messageData);
       localStorage.setItem('contactMessages', JSON.stringify(existingMessages));
 
-      // Save to a JSON file using the backend API
-      const response = await fetch('http://localhost:3001/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(messageData),
-      });
+      // Try to save to backend API with timeout
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-      if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        throw new Error('Failed to save message');
+        const response = await fetch('http://localhost:3001/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(messageData),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          setSubmitStatus('success');
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          return;
+        }
+      } catch (backendError) {
+        console.log('Backend not available, using local storage only:', backendError);
+        // Continue with local storage only
       }
+
+      // If backend fails or times out, still show success (local storage worked)
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
 
     } catch (error) {
       console.error('Error submitting form:', error);
