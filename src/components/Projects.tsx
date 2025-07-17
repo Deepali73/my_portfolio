@@ -365,7 +365,7 @@ const Projects = () => {
             </div>
           </div>
           
-          <div className="overflow-y-auto">
+          <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
             {projects.length > 0 ? (
               projects.map((project, index) => (
                 <ProjectItem key={project.id} project={project} index={index} />

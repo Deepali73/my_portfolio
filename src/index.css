@@ -118,3 +118,19 @@ body {
 .hover-glow:hover {
   box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa #23272a;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #23272a;
+  border-radius: 8px;
+}
