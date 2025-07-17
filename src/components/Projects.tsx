@@ -41,7 +41,7 @@ const Projects = () => {
           'Accept': 'application/vnd.github.v3+json'
         };
 
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=10`, {
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`, {
           headers
         });
         
@@ -365,7 +365,7 @@ const Projects = () => {
             </div>
           </div>
           
-          <div className="max-h-96 overflow-y-auto">
+          <div className="overflow-y-auto">
             {projects.length > 0 ? (
               projects.map((project, index) => (
                 <ProjectItem key={project.id} project={project} index={index} />
