@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Github, ExternalLink, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import ThreeBackground from './ThreeBackground';
+
 interface Project {
   id: string;
   title: string;
@@ -19,13 +21,34 @@ const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   // LinkedIn API configuration
-  const LINKEDIN_PROFILE_ID = 'deepali-verma-075978257'; // Your LinkedIn profile ID
-  const LINKEDIN_ACCESS_TOKEN = import.meta.env.VITE_LINKEDIN_ACCESS_TOKEN; // You'll need to add this to your .env file
+  const LINKEDIN_PROFILE_ID = 'deepali-verma-075978257';
+  const LINKEDIN_ACCESS_TOKEN = import.meta.env.VITE_LINKEDIN_ACCESS_TOKEN;
 
   // GitHub API configuration (fallback)
   const GITHUB_USERNAME = 'Deepali73';
+
+  // Handle card click to expand/collapse
+  const handleCardClick = (projectId: string) => {
+    if (expandedCard === projectId) {
+      setExpandedCard(null);
+    } else {
+      setExpandedCard(projectId);
+    }
+  };
+
+  // Handle backdrop click to close modal
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedCard(null);
+  };
+
+  // Handle modal content click to prevent closing
+  const handleModalClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   // Fetch all projects
   const fetchProjects = async () => {
@@ -121,10 +144,10 @@ const Projects = () => {
     },
     {
       id: 'github-2',
-      title: 'JavaScript Project Collection',
-      description: 'Collection of 15+ mini-projects including interactive games, utilities, and web applications. Technologies: React, JavaScript, HTML/CSS, and modern web tools.',
-      languages: ['JavaScript', 'React', 'HTML/CSS'],
-      url: 'https://github.com/Deepali73/javascript-projects',
+      title: 'Docker Kubernetes Setup',
+      description: 'Complete containerization setup with Docker and Kubernetes orchestration for microservices deployment.',
+      languages: ['YAML', 'Shell', 'Dockerfile'],
+      url: 'https://github.com/Deepali73/docker-k8s-setup',
       source: 'github',
       createdAt: '2024-02-20T14:30:00Z',
       stars: 23,
@@ -133,10 +156,10 @@ const Projects = () => {
     },
     {
       id: 'github-3',
-      title: 'Linux Automation Scripts',
-      description: 'Bash scripts for system automation, server management, and deployment workflows. Includes Docker containerization and Kubernetes orchestration with Python integration.',
-      languages: ['Bash', 'Shell', 'Python'],
-      url: 'https://github.com/Deepali73/linux-automation',
+      title: 'React Portfolio Website',
+      description: 'Modern responsive portfolio built with React, TypeScript, and Tailwind CSS. Features smooth animations and interactive components.',
+      languages: ['TypeScript', 'React', 'Tailwind CSS'],
+      url: 'https://github.com/Deepali73/react-portfolio',
       source: 'github',
       createdAt: '2024-03-10T09:15:00Z',
       stars: 18,
@@ -145,10 +168,10 @@ const Projects = () => {
     },
     {
       id: 'github-4',
-      title: 'Climbing Stairs',
-      description: 'Java implementation of climbing stairs problem using dynamic programming for efficient algorithm design. Demonstrates advanced Java programming and problem-solving skills.',
-      languages: ['Java'],
-      url: 'https://github.com/Deepali73/Climbing-stairs',
+      title: 'Data Analytics Dashboard',
+      description: 'Interactive data visualization dashboard using Python, Pandas, and Plotly for business intelligence.',
+      languages: ['Python', 'JavaScript', 'HTML/CSS'],
+      url: 'https://github.com/Deepali73/data-dashboard',
       source: 'github',
       createdAt: '2024-03-15T11:20:00Z',
       stars: 5,
@@ -264,6 +287,9 @@ const Projects = () => {
     if (lower.includes('portfolio') || lower.includes('web')) return '💻';
     if (lower.includes('university')) return '🎓';
     if (lower.includes('java') || lower.includes('algorithm') || lower.includes('data structure')) return '📚';
+    if (lower.includes('docker') || lower.includes('kubernetes')) return '🐳';
+    if (lower.includes('ai') || lower.includes('ml')) return '🤖';
+    if (lower.includes('data') || lower.includes('analytics')) return '📊';
     return '💡';
   };
 
@@ -277,59 +303,152 @@ const Projects = () => {
     loadProjects();
   }, []);
 
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setExpandedCard(null);
+      }
+    };
 
+    if (expandedCard) {
+      document.addEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
 
-  const ProjectItem = ({ project, index }: { project: Project; index: number }) => {
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'unset'; // Restore scrolling
+    };
+  }, [expandedCard]);
+
+  const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+    const isExpanded = expandedCard === project.id;
+    
     return (
-      <motion.div 
-        initial={{ opacity: 0, x: -50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: index * 0.1 }}
-        viewport={{ once: true }}
-        whileHover={{ x: 10 }}
-        className="border-b border-gray-700 last:border-b-0"
-      >
-        <div className="py-4 px-6 hover:bg-gray-800/30 transition-colors duration-200">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white hover:text-purple-400 transition-colors duration-200 mb-2">
-                <span className="mr-2">{getProjectEmoji(project.title)}</span>{project.title}
+      <>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.05 }}
+          viewport={{ once: true }}
+          whileHover={{ y: -2, scale: 1.01 }}
+          onClick={() => handleCardClick(project.id)}
+          className={`bg-gray-800/50 backdrop-blur-lg rounded-md border border-gray-700 hover:border-primary-500/50 transition-all duration-300 p-2 group cursor-pointer ${
+            isExpanded ? 'ring-2 ring-primary-500/50' : ''
+          }`}
+        >
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center space-x-1 flex-1 min-w-0">
+              <span className="text-xs">{getProjectEmoji(project.title)}</span>
+              <h3 className="text-xs font-medium text-white group-hover:text-primary-400 transition-colors duration-200 truncate">
+                {project.title}
               </h3>
-              <p className="text-gray-300 text-sm leading-relaxed">
+            </div>
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="p-0.5 bg-gray-700 hover:bg-primary-500 rounded transition-colors duration-200 flex-shrink-0 ml-1"
+              title={`View on ${project.source === 'github' ? 'GitHub' : 'LinkedIn'}`}
+            >
+              <ExternalLink size={8} className="text-gray-300 hover:text-white" />
+            </a>
+          </div>
+          
+          <div className="flex items-center space-x-1">
+            {project.languages.slice(0, 1).map((lang) => (
+              <span
+                key={lang}
+                className="text-xs bg-gray-700/50 text-gray-300 px-1 py-0.5 rounded border border-gray-600"
+              >
+                {lang}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Expanded Card Overlay */}
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={handleBackdropClick}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              onClick={handleModalClick}
+              className="bg-gray-800/95 backdrop-blur-lg rounded-lg border border-primary-500/50 p-4 max-w-sm w-full shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">{getProjectEmoji(project.title)}</span>
+                  <h3 className="text-lg font-semibold text-white">
+                    {project.title}
+                  </h3>
+                </div>
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gray-700 hover:bg-primary-500 rounded-lg transition-colors duration-200"
+                  title={`View on ${project.source === 'github' ? 'GitHub' : 'LinkedIn'}`}
+                >
+                  <ExternalLink size={16} className="text-gray-300 hover:text-white" />
+                </a>
+              </div>
+              
+              <p className="text-gray-300 text-sm leading-relaxed mb-4">
                 {project.description}
               </p>
-            </div>
-            
-            <div className="flex items-center space-x-2 ml-4">
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-200"
-                title={`View on ${project.source === 'github' ? 'GitHub' : 'LinkedIn'}`}
-              >
-                <ExternalLink size={16} className="text-gray-300 hover:text-white" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+              
+              <div className="flex flex-wrap gap-2">
+                {project.languages.map((lang) => (
+                  <span
+                    key={lang}
+                    className="text-sm bg-gray-700/50 text-gray-300 px-2 py-1 rounded border border-gray-600"
+                  >
+                    {lang}
+                  </span>
+                ))}
+              </div>
+              
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => setExpandedCard(null)}
+                  className="text-xs text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                  Click to close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </>
     );
   };
 
   if (loading) {
     return (
-      <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <ThreeBackground />
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-500 to-purple-500 bg-clip-text text-transparent">
                 Projects
               </span>
             </h2>
           </div>
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"></div>
             <p className="text-gray-400 mt-4">Loading projects...</p>
           </div>
         </div>
@@ -338,43 +457,26 @@ const Projects = () => {
   }
 
   return (
-    <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <ThreeBackground />
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 to-purple-500 bg-clip-text text-transparent">
               Projects
             </span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            My latest projects from LinkedIn and GitHub - automatically updated
+            My latest projects from GitHub & LinkedIn - automatically updated
           </p>
         </div>
 
-        {/* Unified Projects List */}
-        <div className="bg-gray-800/50 backdrop-blur-lg rounded-2xl border border-gray-700">
-          <div className="p-6 border-b border-gray-700">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                <Github className="text-white" size={20} />
-            </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white">All Projects</h3>
-                <p className="text-gray-400 text-sm">{projects.length} projects from LinkedIn & GitHub</p>
-            </div>
-            </div>
-          </div>
-          
-          <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
-            {projects.length > 0 ? (
-              projects.map((project, index) => (
-                <ProjectItem key={project.id} project={project} index={index} />
-              ))
-            ) : (
-              <div className="p-6 text-center text-gray-400">
-                No projects found
-              </div>
-            )}
+        {/* Simple Grid of Small Project Cards */}
+        <div className="card-glass p-4">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
           </div>
         </div>
 
@@ -383,25 +485,25 @@ const Projects = () => {
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <a
               href="https://github.com/Deepali73"
-                      target="_blank"
-                      rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 border border-gray-700 hover:border-green-500"
-                    >
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 bg-dark-300 hover:bg-dark-400 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 border border-primary-500/30 hover:border-primary-500"
+            >
               <Github size={18} />
               <span>View All on GitHub</span>
               <ExternalLink size={14} />
-                    </a>
-                    <a
+            </a>
+            <a
               href="https://www.linkedin.com/in/deepali-verma-075978257"
-                      target="_blank"
-                      rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 border border-blue-600 hover:border-blue-500"
-                    >
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-2 bg-gradient-accent text-dark-100 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 border border-gold-500/30 hover:border-gold-500"
+            >
               <Linkedin size={18} />
               <span>View All on LinkedIn</span>
               <ExternalLink size={14} />
-                    </a>
-                  </div>
+            </a>
+          </div>
         </div>
       </div>
     </section>

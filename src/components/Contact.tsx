@@ -11,6 +11,7 @@ const Contact = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -58,6 +59,7 @@ const Contact = () => {
         if (response.ok) {
           setSubmitStatus('success');
           setFormData({ name: '', email: '', subject: '', message: '' });
+          setShowToast(true);
           return;
         }
       } catch (backendError) {
@@ -68,6 +70,7 @@ const Contact = () => {
       // If backend fails or times out, still show success (local storage worked)
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
+      setShowToast(true);
 
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -81,12 +84,22 @@ const Contact = () => {
     }
   };
 
+  // Auto-hide toast after 4 seconds
+  React.useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
   return (
     <section id="contact" className="relative py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 to-purple-500 bg-clip-text text-transparent">
               Let's Connect
             </span>
           </h2>
@@ -98,68 +111,77 @@ const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Contact Info */}
           <div className="space-y-8">
-            <div className="bg-gray-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-700">
-              <h3 className="text-xl font-semibold mb-4 flex items-center">
-                <MessageSquare className="mr-2 text-purple-400" size={20} />
-                Get In Touch
-              </h3>
-              <p className="text-gray-300 mb-4 leading-relaxed text-sm">
-                I'm always excited to work on new projects and collaborate with amazing people. 
-                Whether you have a question, want to discuss a potential project, or just want to say hi, 
-                feel free to reach out!
-              </p>
-              
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Mail className="text-purple-400" size={16} />
-                  <span className="text-gray-300 text-sm">deepaliverma440@gmail.com</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="text-purple-400" size={16} />
-                  <span className="text-gray-300 text-sm">+91 8529301089</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <MapPin className="text-purple-400" size={16} />
-                  <span className="text-gray-300 text-sm">Jaipur, Rajasthan</span>
+            <div className="card-glass p-8">
+              <h3 className="text-2xl font-bold text-white mb-6">Get in Touch</h3>
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                    <Mail className="text-white" size={20} />
+                  </div>
+                                     <div>
+                     <p className="text-gray-300 text-sm">Email</p>
+                     <p className="text-white font-medium">deepaliverma440@gmail.com</p>
+                   </div>
+                 </div>
+                 
+                 <div className="flex items-center space-x-4">
+                   <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                     <Phone className="text-white" size={20} />
+                   </div>
+                   <div>
+                     <p className="text-gray-300 text-sm">Phone</p>
+                     <p className="text-white font-medium">+91 8529301089</p>
+                   </div>
+                 </div>
+                 
+                 <div className="flex items-center space-x-4">
+                   <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                     <MapPin className="text-white" size={20} />
+                   </div>
+                   <div>
+                     <p className="text-gray-300 text-sm">Location</p>
+                     <p className="text-white font-medium">Jaipur, Rajasthan</p>
+                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <a
-                href="https://github.com/Deepali73"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gray-800/50 backdrop-blur-lg p-4 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-105 flex flex-col items-center justify-center space-y-2 text-gray-300 hover:text-gray-400"
-              >
-                <Github size={24} />
-                <span className="text-sm font-medium">GitHub</span>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/deepali-verma-075978257"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gray-800/50 backdrop-blur-lg p-4 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-105 flex flex-col items-center justify-center space-y-2 text-gray-300 hover:text-blue-400"
-              >
-                <Linkedin size={24} />
-                <span className="text-sm font-medium">LinkedIn</span>
-              </a>
-              <a
-                href="https://twitter.com/deepali_verma"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gray-800/50 backdrop-blur-lg p-4 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200 hover:scale-105 flex flex-col items-center justify-center space-y-2 text-gray-300 hover:text-blue-500"
-              >
-                <Twitter size={24} />
-                <span className="text-sm font-medium">Twitter</span>
-              </a>
+            <div className="card-glass p-8">
+              <h3 className="text-2xl font-bold text-white mb-6">Follow Me</h3>
+              <div className="flex space-x-4">
+                <a
+                  href="https://github.com/Deepali73"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors duration-200"
+                >
+                  <Github className="text-white" size={20} />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/deepali-verma-075978257"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center transition-colors duration-200"
+                >
+                  <Linkedin className="text-white" size={20} />
+                </a>
+                <a
+                  href="https://x.com/DeepaliVer13316?s=08"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-lg flex items-center justify-center transition-colors duration-200"
+                >
+                  <Twitter className="text-white" size={20} />
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-gray-800/50 backdrop-blur-lg p-6 rounded-xl border border-gray-700">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+          <div className="card-glass p-8">
+            <h3 className="text-2xl font-bold text-white mb-6">Send a Message</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                     Name
@@ -171,7 +193,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
                     placeholder="Your Name"
                   />
                 </div>
@@ -186,7 +208,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -203,7 +225,7 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200"
                   placeholder="What's this about?"
                 />
               </div>
@@ -219,7 +241,7 @@ const Contact = () => {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-400 transition-all duration-200 resize-none"
                   placeholder="Tell me about your project or question..."
                 ></textarea>
               </div>
@@ -234,7 +256,7 @@ const Contact = () => {
                     ? 'bg-green-600 hover:bg-green-700'
                     : submitStatus === 'error'
                     ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-purple-600 hover:bg-purple-700'
+                    : 'bg-gradient-primary hover:bg-gradient-secondary'
                 } text-white`}
               >
                 {isSubmitting ? (
@@ -261,6 +283,21 @@ const Contact = () => {
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-gradient-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 animate-bounce">
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <span className="text-primary-500 text-sm font-bold">✓</span>
+            </div>
+            <div>
+              <p className="font-medium">Thank you for your message!</p>
+              <p className="text-sm opacity-90">I'll get back to you soon. Keep in touch! 👋</p>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

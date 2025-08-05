@@ -42,26 +42,26 @@ const Hero = () => {
     <section id="home" className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-16 overflow-hidden">
       <div className="max-w-7xl mx-auto text-center relative z-10">
         <div className="mb-8">
-          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 p-1">
-            <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center overflow-hidden">
+          <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary-500 to-purple-500 p-1 transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-primary-500/50">
+            <div className="w-full h-full rounded-full bg-dark-100 flex items-center justify-center overflow-hidden">
               <img
                 src="/deepali.jpg"
                 alt="Deepali Verma"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover rounded-full transition-all duration-300 hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center text-white text-2xl font-bold">DV</div>';
+                  e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-full rounded-full bg-gradient-to-r from-primary-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">DV</div>';
                 }}
               />
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 via-purple-500 to-white bg-clip-text text-transparent">
               Deepali Verma
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-4 font-medium min-h-[2.5rem]">
-            <span className="border-r-2 border-purple-400 pr-1 animate-pulse">{currentWord}</span>
+            <span className="border-r-2 border-primary-500 pr-1 animate-pulse">{currentWord}</span>
           </p>
           <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
             Curiosity-driven developer passionate about AI, MLOps, DevOps, and building scalable, real-world solutions.
@@ -73,7 +73,7 @@ const Hero = () => {
             href="/DEEPALI VERMA.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            className="group flex items-center space-x-2 bg-gradient-primary hover:bg-gradient-secondary text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
           >
             <Download size={20} />
             <span>Download Resume</span>
@@ -82,7 +82,7 @@ const Hero = () => {
             href="https://github.com/Deepali73"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center space-x-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            className="group flex items-center space-x-2 bg-dark-300 hover:bg-dark-400 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg border border-primary-500/30"
           >
             <Github size={20} />
             <span>GitHub</span>
@@ -92,7 +92,7 @@ const Hero = () => {
             href="https://www.linkedin.com/in/deepali-verma-075978257"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            className="group flex items-center space-x-2 bg-gradient-accent text-dark-100 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
           >
             <Linkedin size={20} />
             <span>LinkedIn</span>

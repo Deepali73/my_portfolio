@@ -38,8 +38,8 @@ const Skills = () => {
       title: 'DevOps & Cloud',
       icon: Cloud,
       color: 'from-green-500 to-teal-500',
-      skills: ['Docker', 'Kubernetes', 'AWS', 'Azure', 'Linux', 'CI/CD', 'Terraform'],
-      description: 'Cloud infrastructure, containerization, and automation tools for seamless deployment and scaling.'
+      skills: ['Docker', 'Kubernetes', 'AWS', 'Ansible', 'Grafana', 'Prometheus', 'Linux', 'CI/CD', 'Terraform'],
+      description: 'Cloud infrastructure, containerization, monitoring, and automation tools for seamless deployment and scaling.'
     },
     {
       title: 'Database & Tools',
